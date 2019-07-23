@@ -9,7 +9,7 @@ const projects = [];
 
 function checkProjectExists(req, res, next) {
   const { id } = req.params;
-  const projetc = projects.findIndex(p => p.id === id);
+  const project = projects.findIndex(p => p.id === id);
 
   if (!project) {
     return res.status(400).json({ error: "Project not found" });
@@ -26,11 +26,11 @@ function logRequests(req, res, next) {
   return next();
 }
 
-server.get("/projects", (req, res) => {
+server.get("/projects", logRequests, (req, res) => {
   return res.json(projects);
 });
 
-server.post("/projects", (req, res) => {
+server.post("/projects", checkProjectExists, (req, res) => {
   const { id, title } = req.body;
 
   const project = {
@@ -44,7 +44,7 @@ server.post("/projects", (req, res) => {
   return res.json(project);
 });
 
-server.put("/projects/:id", (req, res) => {
+server.put("/projects/:id", checkProjectExists, logRequests, (req, res) => {
   const { id } = req.params;
   const { title } = req.body;
 
@@ -55,7 +55,7 @@ server.put("/projects/:id", (req, res) => {
   return res.json(project);
 });
 
-server.delete("/projects/:id", (req, res) => {
+server.delete("/projects/:id", checkProjectExists, logRequests, (req, res) => {
   const { id } = req.params;
 
   const projectIndex = projects.findIndex(p => p.id === id);
@@ -65,7 +65,7 @@ server.delete("/projects/:id", (req, res) => {
   return res.send();
 });
 
-server.post("/projects/:id/tasks", (req, res) => {
+server.post("/projects/:id/tasks", checkProjectExists, logRequests, (req, res) => {
   const { id } = req.params;
   const { title } = req.body;
 
